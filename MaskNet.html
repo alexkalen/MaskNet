@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Modelo de Predicción MaskNet</title>
+    <link rel="stylesheet" href="css/style2.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+</head>
+<body>
+
+<!-- Título y Subtitulo -->
+    <div class="container-fluid pt-3 pb-3">
+        <div class="row">
+          <div class="col-sm">
+          </div>
+          <div class="col-sm">
+            <h1 class="display-5 text-center" style="font-size: 60px;">Mask-net</h1>
+            <h5 class="text-center font-weight-bold" style="color:lightslategray; font-size:25px;">Kalen | Landi</h5>
+          </div>
+          <div class="col-sm">
+          </div>
+        </div>
+      </div>
+
+    <div class="container-fluid mx-auto px-5">
+        <div class="row col mb-5">
+
+<!-- Columna de Foto -->
+            <div class="col img-fluid">
+                <div class="row mt-2 mb-2"  style="text-align: center;">
+                    <p>
+                        <input class="btn" id="image-selector" type="file" style="font-size: 20px;">
+                    </p>
+                </div>
+                <div class="row mt-2" >
+                    <div style="text-align: center;">
+                        <img id = "selected-image" src="" style="max-height: 300px;">
+                    </div>
+                </div>
+            </div>
+
+<!-- Columna de Informacion -->
+            <div class="col">
+                <div class="row mt-3">
+                    <div style="text-align: center;">
+                        <p>
+                            <button class="btn btn-primary p-1" id ="predict-button" style="text-align: center; color:black; background-color: white; border-color: lightslategray; border-width: 4px; font-size: 15px;">Predecir</button>
+                        </p>
+                    </div>
+                </div>
+                <div class="row py-2">
+                    <div class="mx-auto"><span id="top_x_div" style="width: 500px; height: 200px; text-align: left;"></span></div>
+                </div>
+                <div class="row mt-2" style="text-align: center;">
+                    <h5>
+                        <div><span id="suggestion-prediction" style="color: gray; font-size: 20px;"></span></div>
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Scripts de Javascript -->
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type='text/javascript' src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type='text/javascript'>
+        let base64Image;
+
+
+        $("#image-selector").change(function() {
+            let reader = new FileReader(); 
+            reader.onload = function(e) {
+                let dataURL = reader.result;
+                $('#selected-image').attr("src", dataURL);
+                base64Image = dataURL.replace(/^data:image\/[a-z]+;base64,/, "");
+                console.log(base64Image);
+            } 
+            reader.readAsDataURL($("#image-selector")[0].files[0]);
+            // $("#mask-prediction").text("");
+            // $("#mask_incorrect-prediction").text("");
+            // $("#no_mask-prediction").text("");
+            $("#suggestion-prediction").text("");
+
+            google.charts.load('current', {'packages':['bar']});
+            google.charts.setOnLoadCallback(clearChart);
+
+            function clearChart() { 
+                var data = new google.visualization.arrayToDataTable([
+                ['', 'Porcentaje'],
+                ["Mascarilla", 0],
+                ["Mascarilla Incorrecta", 0],
+                ["Sin Mascarilla", 0],
+                ]);
+                var options = getOptions();
+                var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+                chart.draw(data, google.charts.Bar.convertOptions(options));
+                };
+        });
+
+        $("#predict-button").click(function(){
+            let message = {
+                image: base64Image
+            }
+            console.log(message);
+
+
+            $.post("http://192.168.1.129:5000/MaskNet", JSON.stringify(message), function(response1){
+                // $("#mask-prediction").text(response1.prediction.mask.toFixed(2));
+                // $("#mask_incorrect-prediction").text(response1.prediction.mask_incorrect.toFixed(2));
+                // $("#no_mask-prediction").text(response1.prediction.no_mask.toFixed(2));
+
+                // console.log(response1);
+                var m = response1.prediction.mask
+                var m_i = response1.prediction.mask_incorrect
+                var no_m = response1.prediction.no_mask
+                // console.log(m)
+
+                google.charts.load('current', {'packages':['bar']});
+                google.charts.setOnLoadCallback(drawChart);
+
+                function drawChart() { 
+                    var data = new google.visualization.arrayToDataTable([
+                    ['', 'Porcentaje'],
+                    ["Mascarilla", m],
+                    ["Mascarilla Incorrecta", m_i],
+                    ["Sin Mascarilla", no_m],
+                    ]);
+                    var options = getOptions();
+
+                    var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+                    chart.draw(data, google.charts.Bar.convertOptions(options));
+                };
+
+            });
+
+            $.post("http://192.168.1.129:5000/MaskNet", JSON.stringify(message), function(response1){
+                $("#suggestion-prediction").text(response1.suggestion.answer);
+                console.log(response1);
+            });
+            
+        });
+    
+        function getOptions(){
+            var options = {
+                width: 500,
+                legend: { position: 'none' },
+                bars: 'horizontal', // Required for Material Bar Charts.
+                axes: {
+                    x: {
+                    0: { side: 'top', label: 'Porcentaje'} // Top x-axis.
+                    }
+                },
+                hAxis:{
+                    viewWindow:{
+                        max: 100,
+                        min: 0
+                    }
+                },
+                bar: { groupWidth: "90%" },
+                animation: {
+                    duration: 1500,
+                    easing: 'out',
+                    "startup": true
+                },
+            };
+            return options;
+        }
+    
+    </script>
+</body>
+<footer>
+    <div class="row py-5" style="background-color:lightslategray">
+        <div class="col ps-5">
+            <p class="display-5 mb-1" style="font-size: 20px; color:white;">Mask-net</p>
+            <p style="font-size: medium; color: white;">2020 - 2021 &copy;</p>
+        </div>
+        <div class="col py-2">
+        </div>
+    </div>
+</footer>
+</html>
