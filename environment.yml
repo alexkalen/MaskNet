@@ -1,0 +1,15 @@
+name: masknet
+channels:
+  - defaults
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.9
+  - flask
+  - flask-cors
+  - tensorflow
+  - keras
+  - mtcnn
+  - pillow
+
+
