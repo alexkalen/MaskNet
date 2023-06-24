@@ -159,9 +159,9 @@ def predict():
     #         'answer': answer
     #     }
     # }
+    #
+    # return jsonify(response1) # Returning a JSON response with probabilities and suggestion
     #######
-
-
 
     if ((prediction[0][0] > prediction[0][1]) and (prediction[0][0] > prediction[0][2])): # Checking if mask is predicted with highest probability
          answer = "Parece que estas usando la mascarilla de manera adecuada. Felicitaciones!" # Congratulating the user for wearing the mask correctly

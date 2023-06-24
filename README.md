@@ -6,7 +6,7 @@ MaskNet is an app for running live tests on a set of convolutional neural networ
 
 The COVID-19 pandemic has made the use of face masks a crucial preventive measure to reduce the transmission of the virus. However, many people do not wear masks properly, either exposing their nose or mouth, or wearing them loosely. This reduces the effectiveness of the masks and increases the risk of infection. Therefore, it is important to monitor and correct the use of masks in public places, such as schools, workplaces, or transportation hubs.
 
-MaskNet is a computer vision system that aims to address this problem by automatically detecting and classifying the use of masks in real time. MaskNet consists of three modules: a face detector, a mask classifier, and a mask corrector. The face detector locates the faces in the input image or video stream. The mask classifier determines if each face is wearing a mask correctly, incorrectly, or not at all. The mask corrector generates suggestions on how to improve the use of masks for those who are wearing them incorrectly.
+MaskNet is a computer vision system that aims to address this problem by automatically detecting and classifying the use of masks in real time. MaskNet consists of three modules: a face detector, a mask classifier, and a mask corrector. The face detector locates the faces in the input image. The mask classifier determines if each face is wearing a mask correctly, incorrectly, or not at all. The mask corrector generates suggestions on how to improve the use of masks for those who are wearing them incorrectly.
 
 ## Installation
 
