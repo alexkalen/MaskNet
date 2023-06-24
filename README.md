@@ -54,7 +54,7 @@ python MaskNet.py
 
 - Open a web browser and go to http://localhost:5000
 
-- Upload an image file that contains one or more faces and click on the “Submit” button.
+- Upload an image file that contains a face and click on the “Submit” button.
 
 - The app will display the uploaded image with bounding boxes around each detected face and labels indicating their mask status (correct, incorrect, or none). If a face is wearing a mask incorrectly, the app will also display a suggestion on how to correct it.
 

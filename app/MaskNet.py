@@ -21,9 +21,9 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 # Defining a function to load the models
 def get_model():
     global model1, model2 # It is not recommended to use global variables, you can return the models instead and assign them to variables outside the function
-    model1 = load_model('C://Users//alexk//Desktop//Modelos_MaskNet//modelo_1.h5')
+    model1 = load_model('/Users/albertolandi/Documents/GitHub/MaskNet/app/models/modelo_1.h5')
     print(" * Model 1  loaded!")
-    model2 = load_model('C://Users//alexk//Desktop//Modelos_MaskNet//modelo_2_IMKLD.h5')
+    model2 = load_model('/Users/albertolandi/Documents/GitHub/MaskNet/app/models/modelo_2_IMKLD.h5')
     print(" * Model 2  loaded!")
 
 # Defining a function to preprocess the image for prediction
